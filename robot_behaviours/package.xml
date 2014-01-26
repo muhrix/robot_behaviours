@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package>
+  <name>robot_behaviours</name>
+  <version>0.0.1</version>
+  <description>The robot_behaviours metapackage</description>
+  <maintainer email="muhrix@gmail.com">Murilo F. M.</maintainer>
+  <license>BSD</license>
+  <author email="muhrix@gmail.com">Murilo F. M.</author>
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>laser_obstacle_avoidance</run_depend>
+  <export>
+    <metapackage/>
+  </export>
+</package>
