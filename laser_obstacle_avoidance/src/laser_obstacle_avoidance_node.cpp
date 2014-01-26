@@ -5,6 +5,8 @@
  *      Author: Murilo F. M.
  *       Email: muhrix@gmail.com
  *
+ * Adapted from wander.cc found at https://github.com/rtv/Stage
+ *
  */
 
 #include <ros/ros.h>
