@@ -15,17 +15,15 @@
 
 #include <algorithm>
 
-static const double cruisespeed = 0.75;
-static const double avoidspeed = 0.3;
-static const double avoidturn = 0.8;
-static const double minfrontdistance = 1.2; // 0.6
-static const double stopdist = 0.6;
-static const int avoidduration = 50;
-
-int avoidcount = 0;
+const double cruisespeed = 0.75;
+const double avoidspeed = 0.3;
+const double avoidturn = 0.8;
+const double minfrontdistance = 1.2; // 0.6
+const double stopdist = 0.6;
+const int avoidduration = 50;
 
 void laserScanCallback(ros::Publisher& pub, geometry_msgs::Twist& cmd_msg,
-		double& v_max, double& w_max, const sensor_msgs::LaserScanConstPtr& scan_data) {
+		int& avoidcount, const sensor_msgs::LaserScanConstPtr& scan_data) {
 
 	const sensor_msgs::LaserScan::_ranges_type& scan = scan_data->ranges;
 	uint32_t sample_count = scan.size();
@@ -85,16 +83,14 @@ int main(int argc, char** argv) {
 
 	ros::NodeHandle my_node;
 	geometry_msgs::Twist cmd;
-	double vx, wz;
 
-	my_node.param("vx", vx, 1.0);
-	my_node.param("wz", wz, 0.8);
+	int avoid_count = 0;
 
 	ros::Publisher pub_vel = my_node.advertise<geometry_msgs::Twist>("cmd_vel", 1);
 
 	ros::Subscriber sub_laser = my_node.subscribe<sensor_msgs::LaserScan>
 	("scan", 1, boost::bind(&laserScanCallback, boost::ref(pub_vel), boost::ref(cmd),
-			boost::ref(vx), boost::ref(wz), _1));
+			boost::ref(avoid_count), _1));
 
 	ros::spin();
 
