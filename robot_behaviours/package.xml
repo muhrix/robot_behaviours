@@ -7,7 +7,8 @@
   <license>BSD</license>
   <author email="muhrix@gmail.com">Murilo F. M.</author>
   <buildtool_depend>catkin</buildtool_depend>
-  <run_depend>laser_obstacle_avoidance</run_depend>
+  <run_depend>wander_behaviour</run_depend>
+  <run_depend>spiral_behaviour</run_depend>
   <export>
     <metapackage/>
   </export>
