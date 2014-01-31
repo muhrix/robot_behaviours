@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+  <name>wander_behaviour</name>
+  <version>0.0.1</version>
+  <description>The wander_behaviour package</description>
+  <maintainer email="muhrix@gmail.com">Murilo F. M.</maintainer>
+  <license>BSD</license>
+  <author email="muhrix@gmail.com">Murilo F. M.</author>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>tf</build_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>tf</run_depend>
+</package>
