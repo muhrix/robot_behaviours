@@ -9,21 +9,27 @@
  *
  */
 
-#include <ros/ros.h>
-#include <geometry_msgs/Twist.h>
-#include <sensor_msgs/LaserScan.h>
+#include "ros/ros.h"
+#include "geometry_msgs/Twist.h"
+#include "sensor_msgs/LaserScan.h"
+#include "tf/transform_listener.h"
+#include "tf/message_filter.h"
+#include "message_filters/subscriber.h"
 
 #include <boost/bind.hpp>
 
 #include <algorithm>
 
-const double cruisespeed = 0.75;
+const double cruisespeed = 0.8;
 const double avoidspeed = 0.3;
 const double avoidturn = 0.8;
 const double minfrontdistance = 1.2; // 0.6
-const double stopdist = 0.6;
+const double stopdist = 0.8;
 const int avoidduration = 50;
 
+//void laserScanCallback(ros::Publisher& pub, tf::TransformListener &listener,
+//		tf::StampedTransform &transform, geometry_msgs::Twist& cmd_msg,
+//		int& avoidcount, const sensor_msgs::LaserScanConstPtr& scan_data) {
 void laserScanCallback(ros::Publisher& pub, geometry_msgs::Twist& cmd_msg,
 		int& avoidcount, const sensor_msgs::LaserScanConstPtr& scan_data) {
 
@@ -86,16 +92,27 @@ int main(int argc, char** argv) {
 	ros::NodeHandle my_node;
 	geometry_msgs::Twist cmd;
 
+	tf::StampedTransform transform;
+	tf::TransformListener tf;
+	tf::MessageFilter<sensor_msgs::LaserScan> * tf_filter;
+	message_filters::Subscriber<sensor_msgs::LaserScan> laser_sub;
+	//ros::Subscriber laser_sub;
+
 	int avoid_count = 0;
 
 	ros::Publisher pub_vel = my_node.advertise<geometry_msgs::Twist>("cmd_vel", 1);
 	ROS_INFO_STREAM("Topic " << pub_vel.getTopic() << " advertised");
 
-	ros::Subscriber sub_laser = my_node.subscribe<sensor_msgs::LaserScan>
-	("scan", 1, boost::bind(&laserScanCallback, boost::ref(pub_vel), boost::ref(cmd),
+//	laser_sub = my_node.subscribe<sensor_msgs::LaserScan>
+//	("scan", 1, boost::bind(&laserScanCallback, boost::ref(pub_vel), boost::ref(tf),
+//			boost::ref(transform), boost::ref(cmd), boost::ref(avoid_count), _1));
+	laser_sub.subscribe(my_node, "scan", 10);
+	tf_filter = new tf::MessageFilter<sensor_msgs::LaserScan>(laser_sub, tf, "/base_link", 10);
+	tf_filter->registerCallback(boost::bind(&laserScanCallback, boost::ref(pub_vel), boost::ref(cmd),
 			boost::ref(avoid_count), _1));
 
-	ROS_INFO_STREAM("Subscribed to topic " << sub_laser.getTopic());
+
+	ROS_INFO_STREAM("Subscribed to topic " << laser_sub.getTopic());
 
 	ros::spin();
 
