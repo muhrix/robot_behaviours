@@ -32,13 +32,17 @@ void RobotPoseCallback(ros::Publisher &pub, SpiralBehaviour &sb, tf::TransformLi
 		const geometry_msgs::PoseWithCovarianceStampedConstPtr& pose) {
 
 	try {
-		listener.lookupTransform("/odom", "/base_link",
-    		ros::Time(0), transform);
+		if (listener.canTransform("/odom", "/base_link", ros::Time(0)) == true) {
+			listener.lookupTransform("/odom", "/base_link", ros::Time(0), transform);
 
-		geometry_msgs::Twist spiralCmd;
-		spiralCmd = sb.CalculateVels(transform);
+			geometry_msgs::Twist spiralCmd;
+			spiralCmd = sb.CalculateVels(transform);
 
-		pub.publish(spiralCmd);
+			pub.publish(spiralCmd);
+		}
+		else {
+			ROS_WARN("Cannot transform");
+		}
 	}
 	catch (tf::TransformException &ex) {
 		ROS_ERROR("%s",ex.what());
